@@ -1,111 +1,66 @@
 use macroquad::prelude::*;
+use std::sync::Arc;
 
-struct Mole {
-    x: f32,
-    y: f32,
-    size: f32,
-    visible: bool,
-    last_toggle: f64,
-}
+mod menu;
+mod game1;
 
-impl Mole {
-    fn new(x: f32, y: f32, size: f32) -> Self {
-        Self {
-            x,
-            y,
-            size,
-            visible: false,
-            last_toggle: get_time(),
-        }
-    }
+use menu::draw_menu;
+use game1::Game;
 
-    fn update(&mut self) {
-        let elapsed = get_time() - self.last_toggle;
-        let toggle_interval = rand::gen_range(1.0, 3.0);
-        
-        if elapsed > toggle_interval {
-            self.visible = !self.visible;
-            self.last_toggle = get_time();
-        }
-    }
-
-    fn draw(&self) {
-        // Draw hole
-        draw_circle(self.x, self.y, self.size, BROWN);
-        draw_circle_lines(self.x, self.y, self.size, 3.0, BLACK);
-        
-        // Draw mole if visible
-        if self.visible {
-            draw_circle(self.x, self.y - 10.0, self.size * 0.8, DARKBROWN);
-            draw_text("🐭", self.x - 15.0, self.y + 10.0, 30.0, WHITE);
-        }
-    }
-
-    fn is_clicked(&self, mouse_x: f32, mouse_y: f32) -> bool {
-        if !self.visible {
-            return false;
-        }
-        let dx = mouse_x - self.x;
-        let dy = mouse_y - self.y;
-        (dx * dx + dy * dy).sqrt() < self.size
-    }
+#[derive(PartialEq)]
+enum GameState {
+    Menu,
+    Playing1,
 }
 
 #[macroquad::main("Whac-A-Mole")]
 async fn main() {
-    let mut score = 0;
-    let mut mole = Mole::new(400.0, 300.0, 50.0);
-    let mut message = String::from("Click the mole when it appears!");
-    let mut message_timer = 0.0;
+    let background_image = load_image("images/background1.png")
+        .await
+        .expect("Failed to load background1 image");
+    let background_texture = Arc::new(Texture2D::from_image(&background_image));
+    
+    let mole_image = load_image("images/mole.png")
+        .await
+        .expect("Failed to load mole image");
+    let mole_texture = Arc::new(Texture2D::from_image(&mole_image));
+    
+    let _hemlet_mole_texture = load_image("images/helmet_mole.png")
+        .await
+        .expect("Failed to load helmet_mole image");
+    let _cat_texture = load_image("images/cat.png")
+        .await
+        .expect("Failed to load cat image");
+    let mut game_state = GameState::Menu;
+    let mut current_game: Option<Game> = None;
 
     loop {
         clear_background(LIGHTGRAY);
 
-        // Update mole
-        mole.update();
+        match game_state {
+            GameState::Menu => {
+                if let Some(difficulty) = draw_menu() {
+                    if difficulty == 1 {
+                        current_game = Some(Game::new(difficulty, background_texture.clone(), mole_texture.clone()));
+                        game_state = GameState::Playing1;
+                    }
+                }
+            }
 
-        // Handle mouse click
-        if is_mouse_button_pressed(MouseButton::Left) {
-            let (mouse_x, mouse_y) = mouse_position();
-            if mole.is_clicked(mouse_x, mouse_y) {
-                score += 1;
-                mole.visible = false;
-                mole.last_toggle = get_time();
-                message = format!("Hit! Score: {}", score);
-                message_timer = get_time();
-            } else {
-                message = "Missed!".to_string();
-                message_timer = get_time();
+            GameState::Playing1 => {
+                if let Some(ref mut game) = current_game {
+                    let return_to_menu = game.update();
+                    game.draw();
+
+                    if return_to_menu {
+                        game_state = GameState::Menu;
+                        current_game = None;
+                    }
+                }
             }
         }
 
-        // Draw mole
-        mole.draw();
-
-        // Draw UI
-        draw_text(
-            &format!("Score: {}", score),
-            20.0,
-            40.0,
-            40.0,
-            BLACK,
-        );
-
-        // Draw message (fade after 1 second)
-        if get_time() - message_timer < 1.0 {
-            draw_text(&message, 20.0, 80.0, 30.0, DARKGREEN);
-        }
-
-        draw_text(
-            "Press ESC or Q to quit",
-            20.0,
-            screen_height() - 20.0,
-            20.0,
-            DARKGRAY,
-        );
-
-        // Check for quit
-        if is_key_pressed(KeyCode::Escape) || is_key_pressed(KeyCode::Q) {
+        if is_key_pressed(KeyCode::Escape) {
             break;
         }
 
