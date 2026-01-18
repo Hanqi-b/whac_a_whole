@@ -43,7 +43,7 @@ impl Mole {
 
     pub fn draw(&self, mole_texture: &Arc<Texture2D>) {
         if self.visible {
-            // 绘制地鼠图片，中心对齐
+            // Draw mole image, centered
             draw_texture(
                 mole_texture,
                 self.x - MOLE_WIDTH / 2.0,
@@ -57,7 +57,7 @@ impl Mole {
         if !self.visible {
             return false;
         }
-        // 矩形碰撞检测
+        // Rectangle collision detection
         let left = self.x - MOLE_WIDTH / 2.0;
         let right = self.x + MOLE_WIDTH / 2.0;
         let top = self.y - MOLE_HEIGHT / 2.0;
@@ -78,12 +78,12 @@ impl Game {
         background_texture: Arc<Texture2D>,
         mole_texture: Arc<Texture2D>,
     ) -> Self {
-        // 四个地鼠的位置
+        // Positions of four moles
         let positions = vec![
-            (250.0, 200.0),  // 左上
-            (550.0, 200.0),  // 右上
-            (250.0, 400.0),  // 左下
-            (550.0, 400.0),  // 右下
+            (400.0, 150.0),  // Top left
+            (800.0, 150.0),  // Top right
+            (400.0, 450.0),  // Bottom left
+            (800.0, 450.0),  // Bottom right
         ];
 
         let moles = positions
@@ -103,12 +103,12 @@ impl Game {
     }
 
     pub fn update(&mut self) -> bool {
-        // 更新所有地鼠
+        // Update all moles
         for mole in &mut self.moles {
             mole.update();
         }
 
-        // 处理鼠标点击
+        // Handle mouse clicks
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             let mut hit = false;
@@ -130,20 +130,20 @@ impl Game {
             }
         }
 
-        // 检查返回菜单
+        // Check for return to menu
         is_key_pressed(KeyCode::Q)
     }
 
     pub fn draw(&self) {
-        // 绘制背景
+        // Draw background
         draw_texture(&self.background_texture, 0.0, 0.0, WHITE);
 
-        // 绘制所有地鼠
+        // Draw all moles
         for mole in &self.moles {
             mole.draw(&self.mole_texture);
         }
 
-        // 绘制UI
+        // Draw UI
         draw_text(
             &format!("Score: {}", self.score),
             20.0,
@@ -152,19 +152,10 @@ impl Game {
             BLACK,
         );
 
-        // 绘制消息（1秒后消失）
-        if get_time() - self.message_timer < 1.0 {
-            draw_text(&self.message, 20.0, 80.0, 30.0, DARKGREEN);
+        // Draw message (disappears after 0.25 seconds)
+        if get_time() - self.message_timer < 0.25 {
+            draw_text(&self.message, 20.0, screen_height() - 80.0, 30.0, DARKGREEN);
         }
-
-        // 绘制难度和提示
-        draw_text(
-            &format!("Difficulty: {}", self.difficulty),
-            20.0,
-            120.0,
-            30.0,
-            DARKGRAY,
-        );
 
         draw_text(
             "Press Q to return to menu, ESC to quit.",
