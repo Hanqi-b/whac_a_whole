@@ -3,9 +3,11 @@ use std::sync::Arc;
 
 mod menu;
 mod game1;
+mod game2;
 
 use menu::draw_menu;
 use game1::Game;
+use game2::Game;
 
 #[derive(PartialEq)]
 enum GameState {
@@ -25,12 +27,16 @@ async fn main() {
         .expect("Failed to load mole image");
     let mole_texture = Arc::new(Texture2D::from_image(&mole_image));
     
-    let _hemlet_mole_texture = load_image("images/helmet_mole.png")
+    let hemlet_mole_image = load_image("images/helmet_mole.png")
         .await
         .expect("Failed to load helmet_mole image");
-    let _cat_texture = load_image("images/cat.png")
+    let hemlet_mole_texture = Arc::new(Texture2D::from_image(&hemlet_mole_image));
+
+    let cat_image = load_image("images/cat.png")
         .await
         .expect("Failed to load cat image");
+    let cat_texture = Arc::new(Texture2D::from_image(&cat_image));
+    
     let mut game_state = GameState::Menu;
     let mut current_game: Option<Game> = None;
 
