@@ -1,0 +1,43 @@
+# Whac-A-Mole Game - Project Roadmap
+
+Project Overview
+A Rust-based Whac-A-Mole game using the Macroquad framework, featuring multiple difficulty levels, diverse enemy types, and AI-assisted development workflow. The project demonstrates proficiency in Rust game development, state management, and sprite-based graphics.
+
+Tech Stack: Rust, Macroquad 0.4, rand 0.8
+
+Development Progress
+
+✅ Completed Milestones
+
+Phase 1: Core Framework
+- Set up Rust project with Macroquad and dependencies
+- Established game loop architecture with state management system
+- Implemented GameState enum (Menu, Playing, GameOver transitions)
+- Created asset loading system for images and sprites
+
+Phase 2: Asset Creation
+- Generate images of Mole, Helmet Mole, Kobe Bryant and background as asset
+- I can't generate Kobe Bryant so i use cat instead
+- Create a Python script to pre-treat these images
+- (parallel with phase 3) update the Python script and test it in the real game UI
+
+Phase 3: Game Mode 1
+- Mole spawn/hide animation system with randomized timing
+- Click-to-hit collision detection
+- Score tracking and 60-second timer
+- Background rendering and UI elements
+
+#### Phase 4: Game Mode 2
+- Enhanced enemy variety system:
+  - **Normal Moles**: +1 point, single hit
+  - **Helmet Moles**: +2 points, requires 3 hits, visual health feedback
+  - **Cats**: -5 penalty for misclicks
+- Enemy type randomization with weighted spawn rates
+- Multi-hit mechanics for armored enemies
+- Penalty system for wrong targets
+
+## Repository
+
+GitHub: [https://github.com/Hanqi-b/whac_a_whole](https://github.com/Hanqi-b/whac_a_whole)
+
+**Note**: This roadmap was created retrospectively to document development progress and plan remaining features before final submission.
