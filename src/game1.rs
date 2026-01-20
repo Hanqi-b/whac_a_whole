@@ -36,7 +36,7 @@ impl Mole {
 
     pub fn update(&mut self) {
         let elapsed = get_time() - self.last_toggle;
-        let toggle_interval = rand::gen_range(0.5, 3.0);
+        let toggle_interval = rand::gen_range(0.8, 4.0);
         
         if elapsed > toggle_interval {
             self.visible = !self.visible;

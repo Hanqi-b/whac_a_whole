@@ -31,15 +31,16 @@ async fn main() {
     let hemlet_mole_image = load_image("images/helmet_mole.png")
         .await
         .expect("Failed to load helmet_mole image");
-    let _hemlet_mole_texture = Arc::new(Texture2D::from_image(&hemlet_mole_image));
+    let hemlet_mole_texture = Arc::new(Texture2D::from_image(&hemlet_mole_image));
 
     let cat_image = load_image("images/cat.png")
         .await
         .expect("Failed to load cat image");
-    let _cat_texture = Arc::new(Texture2D::from_image(&cat_image));
+    let cat_texture = Arc::new(Texture2D::from_image(&cat_image));
     
     let mut game_state = GameState::Menu;
-    let mut current_game: Option<Game1> = None;
+    let mut current_game1: Option<Game1> = None;
+    let mut current_game2: Option<Game2> = None;
 
     loop {
         clear_background(LIGHTGRAY);
@@ -48,20 +49,35 @@ async fn main() {
             GameState::Menu => {
                 if let Some(difficulty) = draw_menu() {
                     if difficulty == 1 {
-                        current_game = Some(Game1::new(difficulty, background_texture.clone(), mole_texture.clone()));
+                        current_game1 = Some(Game1::new(difficulty, background_texture.clone(), mole_texture.clone()));
                         game_state = GameState::Playing1;
+                    } else if difficulty == 2 {
+                        current_game2 = Some(Game2::new(difficulty, background_texture.clone(), mole_texture.clone(), hemlet_mole_texture.clone(), cat_texture.clone()));
+                        game_state = GameState::Playing2;
                     }
                 }
             }
 
             GameState::Playing1 => {
-                if let Some(ref mut game) = current_game {
+                if let Some(ref mut game) = current_game1 {
                     let return_to_menu = game.update();
                     game.draw();
 
                     if return_to_menu {
                         game_state = GameState::Menu;
-                        current_game = None;
+                        current_game1 = None;
+                    }
+                }
+            }
+
+            GameState::Playing2 => {
+                if let Some(ref mut game) = current_game2 {
+                    let return_to_menu = game.update();
+                    game.draw();
+
+                    if return_to_menu {
+                        game_state = GameState::Menu;
+                        current_game2 = None;
                     }
                 }
             }
