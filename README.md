@@ -9,7 +9,7 @@ A Rust-based Whac-A-Mole game built with the Macroquad game framework, featuring
   - **Game Mode 1 (Easy)**: Classic whac-a-mole gameplay with standard moles
   - **Game Mode 2 (Medium)**: Enhanced gameplay with:
     - Normal moles (+1 point)
-    - Helmet moles (require 3 hits, +2 points when defeated)
+    - Helmet moles (require 3 hits, +2 points when defeated, only retreat when health=0)
     - Cats (-5 points if hit by mistake)
 - **60-Second Time Limit**: Score as many points as possible before time runs out
 - **Interactive Menu System**: Easy-to-use button-based menu for difficulty selection
@@ -61,11 +61,12 @@ cargo run
 ## Gameplay
 
 1. Start the game and select a difficulty level from the menu
-2. Click on moles as they appear to score points
-3. In Medium mode:
+2. Enable full-screen mode to ensure the game runs properly
+3. Click on moles as they appear to score points
+4. In Medium mode:
    - Avoid hitting cats (they deduct 5 points)
-   - Helmet moles require multiple hits but give bonus points
-4. Try to achieve the highest score within 60 seconds!
+   - Control the amount of Helmet moles, it require multiple hits but give bonus points
+5. Try to achieve the highest score within 60 seconds!
 
 ## Use of ai
 
@@ -82,8 +83,6 @@ The game requires image assets in the `images/` directory, these assets are gene
 - `cat.png` - Cat sprite
 
 Use the provided Python script in [`utils/process_blue_screen.py`](utils/process_blue_screen.py) to process images with blue screen backgrounds. The script is wrote with help of ai.
-
-## Code Overview
 
 ### Main Components
 

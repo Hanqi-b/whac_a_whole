@@ -61,14 +61,14 @@ impl Mole {
                 if elapsed > toggle_interval {
                     if !*visible {
                         let random = rand::gen_range(0.0, 1.0);
-                        if random < 0.7 {
+                        if random < 0.7 {   // 70% chance for normal mole
                             *self = Mole::Normal_Mole {
                                 x: *x,
                                 y: *y,
                                 visible: true,
                                 last_toggle: get_time(),
                             };
-                        } else if random < 0.85 {
+                        } else if random < 0.85 { // 15% chance for helmet mole
                             *self = Mole::Helmet_Mole {
                                 x: *x,
                                 y: *y,
@@ -77,7 +77,7 @@ impl Mole {
                                 health: 3,
                             };
                         } else {
-                            *self = Mole::Cat {
+                            *self = Mole::Cat {     // 15% chance for cat
                                 x: *x,
                                 y: *y,
                                 visible: true,
@@ -93,11 +93,11 @@ impl Mole {
             Mole::Helmet_Mole { x, y, visible, last_toggle, health } => {
                 if !*visible {
                     let elapsed = get_time() - *last_toggle;
-                    let toggle_interval = rand::gen_range(0.5, 3.0);
+                    let toggle_interval = rand::gen_range(0.5, 3.0); // Moles and cats appear frequency
                     
                     if elapsed > toggle_interval {
                         if !*visible {
-                            let random = rand::gen_range(0.0, 1.0);
+                            let random = rand::gen_range(0.0, 1.0); // Same spawning logic
                             if random < 0.7 {
                                 *self = Mole::Normal_Mole {
                                     x: *x,
@@ -122,7 +122,7 @@ impl Mole {
                                 };
                             };
                         }
-                    }
+                    }   // the mole won't disappear unless health reaches 0
                 }
             }
         }
@@ -256,14 +256,14 @@ impl Game {
             for mole in &mut self.moles {
                 if mole.is_clicked(mouse_x, mouse_y) {
                     match mole {
-                        Mole::Normal_Mole { .. } => {
+                        Mole::Normal_Mole { .. } => {   // Normal mole hit +1 score
                             self.score += 1;
                             mole.hide();
                             self.message = format!("Hit! +1 Score: {}", self.score);
                             self.message_timer = get_time();
                             hit = true;
                         }
-                        Mole::Helmet_Mole { health, .. } => {
+                        Mole::Helmet_Mole { health, .. } => {   // Helmet mole hit -1 health, if 0 health +2 score
                             *health -= 1;
                             if *health == 0 {
                                 self.score += 2;
@@ -276,7 +276,7 @@ impl Game {
                             }
                             self.message_timer = get_time();
                         }
-                        Mole::Cat { .. } => {
+                        Mole::Cat { .. } => {   // Cat hit -5 score
                             self.score -= 5;
                             mole.hide();
                             self.message = format!("Don't hit cats! -5 Score: {}", self.score);

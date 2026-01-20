@@ -18,6 +18,7 @@ enum GameState {
 
 #[macroquad::main("Whac-A-Mole")]
 async fn main() {
+    // Load assets
     let background_image = load_image("images/background1.png")
         .await
         .expect("Failed to load background1 image");
@@ -38,6 +39,7 @@ async fn main() {
         .expect("Failed to load cat image");
     let cat_texture = Arc::new(Texture2D::from_image(&cat_image));
     
+    // Game state
     let mut game_state = GameState::Menu;
     let mut current_game1: Option<Game1> = None;
     let mut current_game2: Option<Game2> = None;
@@ -54,7 +56,7 @@ async fn main() {
                     } else if difficulty == 2 {
                         current_game2 = Some(Game2::new(difficulty, background_texture.clone(), mole_texture.clone(), hemlet_mole_texture.clone(), cat_texture.clone()));
                         game_state = GameState::Playing2;
-                    }
+                    }// no hard mode in this version
                 }
             }
 
