@@ -1,6 +1,6 @@
 # Whac-A-Mole Game
 
-A Rust-based Whac-A-Mole game built with the Macroquad game framework, featuring multiple difficulty levels and game modes.
+A Rust based Whac-A-Mole game built with the Macroquad game framework, featuring multiple difficulty levels and game modes.
 
 ## Features
 
